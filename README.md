@@ -13,4 +13,4 @@ Put advent.trio in the io directory as well
 
 Enable math library (use the console): `if(libs().find(rec => rec->name == "hx.math").isNull) libAdd("hx.math")`
 
-To run e.g. day1a: `ioReadTrio(`io/advent.trio`).find(rec => rec->name == "day1a")->src.eval.call`
+To run e.g. day1a: ```ioReadTrio(`io/advent.trio`).find(rec => rec->name == "day1a")->src.eval.call```
