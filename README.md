@@ -1,8 +1,8 @@
 # Advent of Code 2025
 
-I like to use [Advent of Code](adventofcode.com) to tinker and learn new things.
+I like to use [Advent of Code](https://adventofcode.com) to tinker and learn new things.
 
-This year I'm playing with [Haxall](haxall.io)
+This year I'm playing with [Haxall](https://haxall.io)
 
 Follow the setup instructions to start a Haxall server. I named mine advent-of-code and set it up to run on port 1225 (Because Christmas is 12/25)
 
