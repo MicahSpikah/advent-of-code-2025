@@ -32,3 +32,71 @@ src:
     end
     zeros
   end
+---
+name: day2a
+func
+src:
+  () => do
+    hits: []
+    ioReadStr(`io/in.txt`).split(",").each range => do
+      start: range.split("-")[0].parseInt
+      stop: range.split("-")[1].parseInt
+      times(1 + stop - start) i => do
+        str: (i + start).toStr
+        half: str.size / 2
+        if (str.size.remainder(2) == 0 and str[0..(half - 1)] == str[half..-1]) do
+          hits = hits.add(i + start)
+        end
+      end
+    end
+    hits.fold(sum)
+  end
+---
+name: day2aFast
+func
+help: "This is theoretically faster, although I need to figure out the 3-16 case. The slow day2a func works, so moving on for now"
+src:
+  () => do
+    hits: []
+    ioReadStr(`io/in.txt`).split(",").each range => do
+      start: range.split("-")[0].parseInt
+      stop: range.split("-")[1].parseInt
+      halfSize: if (start.toStr.size.remainder(2) == 0) start.toStr.size / 2 else stop.toStr.size / 2
+      startFirstHalf: start.toStr[0..(start.toStr.size - halfSize - 1)].parseInt
+      stopFirstHalf: stop.toStr[0..(stop.toStr.size - halfSize - 1)].parseInt
+      times(1 + stopFirstHalf - startFirstHalf) i => do
+        halfStr: toStr(i + startFirstHalf)
+        if (halfStr.size == halfSize) do
+          potential: parseInt(halfStr + halfStr)
+          if (start <= potential and potential <= stop) hits = hits.add(potential)
+        end
+      end
+    end
+    hits
+  end
+---
+name: day2b
+func
+src:
+  () => do
+    hits: []
+    ioReadStr(`io/in.txt`).split(",").each range => do
+      start: range.split("-")[0].parseInt
+      stop: range.split("-")[1].parseInt
+      times(1 + stop - start) i => do
+        str: (i + start).toStr
+        times(floor(str.size / 2)) substrLen => do
+          substrLen = substrLen + 1
+          if (str.size.remainder(substrLen) == 0) do
+            base: str[0..(substrLen - 1)]
+            check: ""
+            times(str.size / substrLen) () => check = check + base
+            if (check == str) do
+              hits = hits.add(str.parseInt)
+            end
+          end
+        end
+      end
+    end
+    hits.unique.fold(sum)
+  end
