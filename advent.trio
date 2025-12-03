@@ -100,3 +100,52 @@ src:
     end
     hits.unique.fold(sum)
   end
+---
+name: day3
+func
+help: "The generic way to solve the problem. Give it as many batteries as you're allowed to turn on"
+src:
+  (digits) => do
+    sum: 0
+    ioReadLines(`io/in.txt`).each bank => do
+      maxIndex: 0
+      ((digits - 1)..0).each outDigit => do
+        (maxIndex..(bank.size - outDigit - 1)).each digit => if (bank[digit].toChar > bank[maxIndex].toChar) maxIndex = digit
+        sum = sum + bank[maxIndex].toChar.parseInt * 10.pow(outDigit)
+        maxIndex = maxIndex + 1
+      end
+    end
+    sum
+  end
+---
+name: day3a
+func
+src:
+  () => do
+    sum: 0
+    ioReadLines(`io/in.txt`).each bank => do
+      maxIndex: 0
+      (1..0).each outDigit => do
+        (maxIndex..(bank.size - outDigit - 1)).each digit => if (bank[digit].toChar > bank[maxIndex].toChar) maxIndex = digit
+        sum = sum + bank[maxIndex].toChar.parseInt * 10.pow(outDigit)
+        maxIndex = maxIndex + 1
+      end
+    end
+    sum
+  end
+---
+name: day3b
+func
+src:
+  () => do
+    sum: 0
+    ioReadLines(`io/in.txt`).each bank => do
+      maxIndex: 0
+      (11..0).each outDigit => do
+        (maxIndex..(bank.size - outDigit - 1)).each digit => if (bank[digit].toChar > bank[maxIndex].toChar) maxIndex = digit
+        sum = sum + bank[maxIndex].toChar.parseInt * 10.pow(outDigit)
+        maxIndex = maxIndex + 1
+      end
+    end
+    sum
+  end
