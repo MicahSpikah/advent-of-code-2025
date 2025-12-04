@@ -149,3 +149,48 @@ src:
     end
     sum
   end
+---
+name: day4a
+func
+src:
+  () => do
+    sum: 0
+    lines: ioReadLines(`io/in.txt`)
+
+    (0..(lines.size - 1)).each y => do
+      (0..(lines[y].size - 1)).each x => do
+        if (lines[y][x].toChar == "@" and lines[(y - 1).max(0)..(y + 1).min(lines.size - 1)].reduce(0) (acc, line) => do
+            acc + line[(x - 1).max(0)..(x + 1).min(line.size - 1)].replace(".", "").size
+          end <= 4) sum = sum + 1
+      end
+    end
+    sum
+  end
+---
+name: day4b
+func
+src:
+  () => do
+    sum: 0
+    lines: ioReadLines(`io/in.txt`)
+
+    // Make borders to make my life easier
+    lines = lines.insert(0, lines.first.replace("@", "."))
+    lines = lines.add(lines.first)
+    lines = lines.map line => "." + line + "."
+
+    (0..lines.first.size * lines.size).eachWhile count => do
+      sumAtLoopStart: sum
+      (1..(lines.size - 2)).each y => do
+        (1..(lines[y].size - 2)).each x => do
+          if (lines[y][x].toChar == "@" and lines[(y - 1)..(y + 1)].reduce(0) (acc, line) => do
+              acc + line[(x - 1)..(x + 1)].replace(".", "").size
+            end <= 4) do
+            lines = lines.set(y, lines[y][0..(x - 1)] + "." + lines[y][(x + 1)..-1])
+            sum = sum + 1
+          end
+        end
+      end
+      if (sumAtLoopStart == sum) sum
+    end
+  end
