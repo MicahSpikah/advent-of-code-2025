@@ -194,3 +194,43 @@ src:
       if (sumAtLoopStart == sum) sum
     end
   end
+---
+name: day5a
+func
+src:
+  () => do
+    countingRanges: true
+    fresh: 0
+    freshRanges: []
+    ioReadLines(`io/in.txt`).each line => do
+      if (line.isEmpty) return countingRanges = false
+      if (countingRanges) do
+        parts: line.split("-")
+        freshRanges = freshRanges.add(parts.first.parseNumber..parts.last.parseNumber)
+      else if (freshRanges.any range => range.contains(parseNumber(line))) fresh = fresh + 1
+    end
+    fresh
+  end
+---
+name: day5b
+func
+src:
+  () => do
+    fresh: 0
+    freshRanges: []
+    ioReadLines(`io/in.txt`).each line => do
+      parts: line.split("-")
+      if (parts.size == 2) freshRanges = freshRanges.add(parts.first.parseNumber..parts.last.parseNumber)
+    end
+    freshRanges = freshRanges.sort() (a, b) => a.start <=> b.start
+    growingRange: freshRanges.first
+    freshRanges.each range => do
+      if (range.start > growingRange.end) do
+        fresh = fresh + 1 + growingRange.end - growingRange.start
+        return growingRange = range
+      end
+      growingRange = growingRange.start..max(growingRange.end, range.end)
+    end
+    if (growingRange.isNonNull) fresh = fresh + 1 + growingRange.end - growingRange.start
+    fresh
+  end
