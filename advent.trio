@@ -54,7 +54,7 @@ src:
 ---
 name: day2aFast
 func
-help: "This is theoretically faster, although I need to figure out the 3-16 case. The slow day2a func works, so moving on for now"
+help: "This is theoretically faster, although I need to figure out the 1-2 digit case. The slow day2a func works, so moving on for now"
 src:
   () => do
     hits: []
@@ -233,4 +233,45 @@ src:
     end
     if (growingRange.isNonNull) fresh = fresh + 1 + growingRange.end - growingRange.start
     fresh
+  end
+---
+name: day6a
+func
+src:
+  () => do
+    lines: ioReadLines(`io/in.txt`)
+
+    acc: lines[0].split
+    lines[1..-2].each line => line
+      .split
+      .each() (v, index) => acc = acc.set(index, acc[index] + lines[-1].split[index] + v)
+
+    acc.map(eval).fold(sum)
+  end
+---
+name: day6b
+func
+src:
+  () => do
+    lines: ioReadLines(`io/in.txt`)
+
+    sum: 0
+
+    accumStr: null
+    op: null
+
+    lines[-1].each() (char, index) => do
+      char = char.toChar
+      num: lines[0..-2].map(line => line[index].toChar).concat.trim
+      if (num.isEmpty) do
+        evaluated: accumStr.eval
+        sum = sum + evaluated
+        accumStr = null
+        return null
+      end
+      if (char != " ") op = char
+      if (accumStr.isNull) accumStr = num
+      else accumStr = accumStr + op + num
+    end
+    sum + accumStr.eval
   end
