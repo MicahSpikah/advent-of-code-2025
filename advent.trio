@@ -275,3 +275,119 @@ src:
     end
     sum + accumStr.eval
   end
+---
+name: day7a
+func
+src:
+  () => do
+    lines: ioReadLines(`io/in.txt`)
+
+    splits: 0
+    beams: [lines.first.index("S")]
+    lines.each line => do
+      beamsMod: []
+      beams.each beam => do
+        if (line[beam].toChar == "^") do
+          beamsMod = beamsMod.add(beam - 1)
+          beamsMod = beamsMod.add(beam + 1)
+          splits = splits + 1
+        else beamsMod = beamsMod.add(beam)
+      end
+      beams = beamsMod.unique
+    end
+
+    splits
+  end
+---
+name: day7b
+desc:
+  Run in reverse.
+  Keep a count for each column. Initialize to 1
+  For each row from the bottom up:
+    If the column is a splitter, its new count is the sum of the left and right columns of the previous row
+    Otherwise the column is the count from the previous row
+  Return the count of the column at the S index
+func
+src:
+  () => do
+    lines: ioReadLines(`io/in.txt`)
+
+    count: lines[-1].split(".")[1..-1].map x => 1
+    ((lines.size - 1)..0).each lineIndex => do
+      line: lines[lineIndex]
+      count = count.map() (val, index) => do
+        if (line[index].toChar == "^") count[index - 1] + count[index + 1]
+        else count[index]
+      end
+      count.echo
+    end
+
+    count[lines.first.index("S")]
+  end
+---
+name: day8a
+func
+src:
+  () => do
+    dist: (a, b) => (0..2).map(i => (a[i] - b[i]) * (a[i] - b[i])).fold(sum)
+
+    boxes: ioReadLines(`io/in.txt`).map line => line.split(",").map x => x.parseNumber
+
+    // Start by finding all the distances as a list of lists
+    // Flatten that down to a single list
+    // Sort it to top 1000
+    topK: (0..(boxes.size - 2)).map(b1 => do
+      ((b1 + 1)..(boxes.size - 1)).map b2 => {b1: b1, b2: b2, bd: boxes[b1].dist(boxes[b2])}
+    end).flatten.sort((a, b) => a->bd <=> b->bd)[0..999]
+
+    //topK contains the 1000 closest connections. Now figure out how many circuits I have?
+    //Start with everyone on its own circuit
+    circuits: (0..999).map x => [x]
+
+    //For each connection, if the two ends are on different circuits, connect them
+    topK.each circuit => do
+      c1: circuits.eachWhile() (c, i) => if (c.contains(circuit->b1)) i
+      c2: circuits.eachWhile() (c, i) => if (c.contains(circuit->b2)) i
+      if (c1 != c2) do
+        circuits = circuits.set(c1, circuits[c1].addAll(circuits[c2])).remove(c2)
+      end
+    end
+
+    circuits.map(size)
+  end
+---
+name: day8b
+func
+src:
+  () => do
+    dist: (a, b) => (0..2).map(i => (a[i] - b[i]) * (a[i] - b[i])).fold(sum)
+
+    boxes: ioReadLines(`io/in.txt`).map line => line.split(",").map x => x.parseNumber
+
+    // Start by finding all the distances as a list of lists
+    // Flatten that down to a single list
+    // Sort it
+    boxDists: (0..(boxes.size - 2)).map(b1 => do
+      ((b1 + 1)..(boxes.size - 1)).map b2 => {b1: b1, b2: b2, bd: boxes[b1].dist(boxes[b2])}
+    end).flatten.sort() (a, b) => a->bd <=> b->bd
+
+    //circuits is a list of lists. Each list contains all of the box #s on that circuit
+    //Start with everyone on its own circuit
+    circuits: (0..999).map x => [x]
+
+    //For each connection, if the two ends are on different circuits, connect them
+    boxDists.eachWhile circuit => do
+      c1: circuits.eachWhile() (c, i) => if (c.contains(circuit->b1)) i
+      c2: circuits.eachWhile() (c, i) => if (c.contains(circuit->b2)) i
+      if (c1 != c2) do
+        circuits = circuits.set(c1, circuits[c1].addAll(circuits[c2])).remove(c2)
+      end
+      if (circuits.size == 1) return boxes[circuit->b1].first * boxes[circuit->b2].first
+    end
+  end
+---
+name: day9a
+func
+src:
+  () => do
+  end
