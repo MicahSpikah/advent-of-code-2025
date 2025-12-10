@@ -390,4 +390,18 @@ name: day9a
 func
 src:
   () => do
+    coords: ioReadLines(`io/in.txt`).map line => line.split(",").map x => x.parseNumber
+
+    max: 0
+    each(
+      (0..(coords.size - 2))
+    ) (c1 => do
+      each(
+        (c1 + 1)..(coords.size - 1)
+      ) (c2 => do
+        area: ((coords[c1][0] - coords[c2][0]).abs + 1) * ((coords[c1][1] - coords[c2][1]).abs + 1)
+        if (area > max) max = area
+      end)
+    end)
+    max
   end
